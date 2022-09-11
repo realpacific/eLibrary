@@ -4,4 +4,4 @@ export interface IStorageService {
   putObject(path: string, data: Uint8Array): Promise<void>;
 }
 
-export const IStorageService = Symbol('IStorageService');
+export const IStorageServiceToken = Symbol('IStorageService');

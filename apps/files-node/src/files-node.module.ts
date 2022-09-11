@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { FilesNodeController } from './files-node.controller';
 import { FilesNodeService } from './files-node.service';
+import { LocalStorageModule } from '@infra/infra';
 
 @Module({
-  imports: [],
+  imports: [LocalStorageModule],
   controllers: [FilesNodeController],
   providers: [FilesNodeService],
 })

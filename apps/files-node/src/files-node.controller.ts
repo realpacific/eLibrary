@@ -1,20 +1,28 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesNodeService } from './files-node.service';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadFileRequest } from './models/UploadFileRequest';
+import { Express } from 'express';
 
 @Controller()
 export class FilesNodeController {
   constructor(private readonly service: FilesNodeService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    this.service.uploadFile();
-    console.log(file);
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @Body() body: UploadFileRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    await this.service.uploadFile(body, file);
+    return {
+      body,
+    };
   }
 }

@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { IStorageService, LocalStorageModule } from '@infra/infra';
+import {
+  IStorageService,
+  IStorageServiceToken,
+  LocalStorageModule,
+} from '@infra/infra';
 import * as fs from 'fs';
 
 const fileName = 'test.txt';
@@ -15,7 +19,7 @@ describe('LocalStorageService test', () => {
       imports: [LocalStorageModule],
     }).compile();
 
-    storage = module.get<IStorageService>(IStorageService);
+    storage = module.get<IStorageService>(IStorageServiceToken);
   });
 
   afterAll(async () => {

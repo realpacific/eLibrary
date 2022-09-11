@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { LocalStorageService } from './local-storage.service';
-import { IStorageService } from './IStorageService';
+import { IStorageServiceToken } from './IStorageService';
 
 @Module({
   providers: [
     {
-      provide: IStorageService,
+      provide: IStorageServiceToken,
       useClass: LocalStorageService,
     },
-    LocalStorageService,
   ],
+  exports: [IStorageServiceToken],
 })
 export class LocalStorageModule {}
