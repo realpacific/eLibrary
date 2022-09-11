@@ -6,7 +6,7 @@ import {
   PdfSplitterService,
 } from './pdf-splitter.service';
 import { join, parse } from 'path';
-import { writeFileSync, readFileSync } from 'fs';
+import { IStorage } from '@infra/infra';
 
 function generateFileName(input: string, suffix: string) {
   const { ext, name } = parse(input);
@@ -17,19 +17,24 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(PdfSplitterModule, {
     logger: ['error'],
   });
+  const storage: IStorage = app.get(IStorage);
+
   const input = 'test-pdf.pdf';
 
-  const srcFile = readFileSync(input);
+  const srcFile = await storage.getObject(input);
 
   const [previewResult, fullResult] = await app
     .get(PdfSplitterService)
-    .splitPdf(srcFile, [CONFIG_PREVIEW, CONFIG_FULL]);
+    .splitPdf(new Buffer(srcFile.buffer), [CONFIG_PREVIEW, CONFIG_FULL]);
 
-  writeFileSync(
+  await storage.putObject(
     join('temp', generateFileName(input, 'preview')),
     previewResult,
   );
-  writeFileSync(join('temp', generateFileName(input, 'full')), fullResult);
+  await storage.putObject(
+    join('temp', generateFileName(input, 'full')),
+    fullResult,
+  );
 }
 
 bootstrap();
