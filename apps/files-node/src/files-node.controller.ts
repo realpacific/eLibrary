@@ -22,7 +22,7 @@ export class FilesNodeController {
   ) {
     await this.service.uploadFile(body, file);
     return {
-      body,
+      ...body,
     };
   }
 }

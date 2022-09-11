@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IStorageService } from './IStorageService';
+import { IStorageService } from './../IStorageService';
 import * as fs from 'fs';
 
 @Injectable()

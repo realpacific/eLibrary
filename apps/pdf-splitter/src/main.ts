@@ -1,12 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { PdfSplitterModule } from './pdf-splitter.module';
-import {
-  CONFIG_FULL,
-  CONFIG_PREVIEW,
-  PdfSplitterService,
-} from './pdf-splitter.service';
+import { CONFIG_FULL, PdfSplitterService } from './pdf-splitter.service';
 import { join, parse } from 'path';
 import { IStorageService, IStorageServiceToken } from '@infra/infra';
+import { ConfigService } from '@nestjs/config';
+import { PdfSplitterConfig } from './configuration';
 
 function generateFileName(input: string, suffix: string) {
   const { ext, name } = parse(input);
@@ -18,6 +16,7 @@ async function bootstrap() {
     logger: ['error'],
   });
   const storage = app.get<IStorageService>(IStorageServiceToken);
+  const config = app.get<ConfigService<PdfSplitterConfig>>(ConfigService);
 
   const input = 'test-pdf.pdf';
 
@@ -25,7 +24,12 @@ async function bootstrap() {
 
   const [previewResult, fullResult] = await app
     .get(PdfSplitterService)
-    .splitPdf(new Buffer(srcFile.buffer), [CONFIG_PREVIEW, CONFIG_FULL]);
+    .splitPdf(new Buffer(srcFile.buffer), [
+      {
+        pages: config.get<number>('previewPageSize'),
+      },
+      CONFIG_FULL,
+    ]);
 
   await storage.putObject(
     join('temp', generateFileName(input, 'preview')),
