@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/api/src",
+  "monorepo": true,
+  "root": "apps/api",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/api/tsconfig.app.json"
+  },
+  "projects": {
+    "pdf": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/pdf/tsconfig.app.json"
+      }
+    },
+    "pdf-splitter": {
+      "type": "application",
+      "root": "apps/pdf-splitter",
+      "entryFile": "main",
+      "sourceRoot": "apps/pdf-splitter/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/pdf-splitter/tsconfig.app.json"
+      }
+    }
+  }
+}
