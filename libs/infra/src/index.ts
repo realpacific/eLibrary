@@ -1,3 +1,2 @@
-export * from './storage/storage.module';
-export * from './storage/local-storage.service';
-export * from './storage/IStorage';
+export * from './storage/local-storage.module';
+export * from './storage/IStorageService';

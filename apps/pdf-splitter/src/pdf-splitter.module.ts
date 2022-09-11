@@ -1,15 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PdfSplitterService } from './pdf-splitter.service';
-import { LocalStorageService, IStorage } from '@infra/infra';
+import { LocalStorageModule } from '@infra/infra';
 
 @Module({
-  imports: [],
-  providers: [
-    PdfSplitterService,
-    {
-      provide: IStorage,
-      useClass: LocalStorageService,
-    },
-  ],
+  imports: [LocalStorageModule],
+  providers: [PdfSplitterService],
 })
 export class PdfSplitterModule {}

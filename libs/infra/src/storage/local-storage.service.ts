@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { IStorage } from './IStorage';
+import { IStorageService } from './IStorageService';
 import * as fs from 'fs';
 
 @Injectable()
-export class LocalStorageService extends IStorage {
+export class LocalStorageService implements IStorageService {
   getObject(path: string): Promise<Uint8Array> {
     return fs.promises.readFile(path);
   }
