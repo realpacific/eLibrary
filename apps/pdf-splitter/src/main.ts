@@ -1,12 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { PdfSplitterModule } from './pdf-splitter.module';
-import {
-  CONFIG_FULL,
-  CONFIG_PREVIEW,
-  PdfSplitterService,
-} from './pdf-splitter.service';
+import { CONFIG_FULL, PdfSplitterService } from './pdf-splitter.service';
 import { join, parse } from 'path';
-import { writeFileSync, readFileSync } from 'fs';
+import { IStorageService, IStorageServiceToken } from '@infra/infra';
+import { ConfigService } from '@nestjs/config';
+import { PdfSplitterConfig } from './configuration';
 
 function generateFileName(input: string, suffix: string) {
   const { ext, name } = parse(input);
@@ -17,19 +15,30 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(PdfSplitterModule, {
     logger: ['error'],
   });
+  const storage = app.get<IStorageService>(IStorageServiceToken);
+  const config = app.get<ConfigService<PdfSplitterConfig>>(ConfigService);
+
   const input = 'test-pdf.pdf';
 
-  const srcFile = readFileSync(input);
+  const srcFile = await storage.getObject(input);
 
   const [previewResult, fullResult] = await app
     .get(PdfSplitterService)
-    .splitPdf(srcFile, [CONFIG_PREVIEW, CONFIG_FULL]);
+    .splitPdf(new Buffer(srcFile.buffer), [
+      {
+        pages: config.get<number>('previewPageSize'),
+      },
+      CONFIG_FULL,
+    ]);
 
-  writeFileSync(
+  await storage.putObject(
     join('temp', generateFileName(input, 'preview')),
     previewResult,
   );
-  writeFileSync(join('temp', generateFileName(input, 'full')), fullResult);
+  await storage.putObject(
+    join('temp', generateFileName(input, 'full')),
+    fullResult,
+  );
 }
 
 bootstrap();

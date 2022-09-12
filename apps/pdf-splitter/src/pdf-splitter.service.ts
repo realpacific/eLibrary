@@ -9,10 +9,6 @@ export const CONFIG_FULL: SplitterConfig = {
   pages: undefined,
 } as const;
 
-export const CONFIG_PREVIEW: SplitterConfig = {
-  pages: 10,
-} as const;
-
 @Injectable()
 export class PdfSplitterService {
   async splitPdf(
